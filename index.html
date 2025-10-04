@@ -92,7 +92,8 @@
 
     <script>
         // the api url is now a relative path that matches the route in vercel.json.
-        const backend_api_url = "/api/back/summarize";
+        const backend_api_url = "/api/back";
+
 
         // here we are getting references to our html elements.
         const articletextinput = document.getElementById('articleText');
@@ -141,16 +142,25 @@
                 headers: {
                     "content-type": "application/json"
                 },
-                method: "post",
+                method: "POST",
                 body: JSON.stringify(data),
             });
 
-            const responsebody = await response.json();
+            // Try to parse JSON, fallback to text if not JSON
+            let responsebody;
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+                responsebody = await response.json();
+            } else {
+                const text = await response.text();
+                throw new Error(`Expected JSON, got: ${text}`);
+            }
 
             if (!response.ok) {
-                 let errormessage = responsebody.error || `api returned status ${response.status}.`;
-                 throw new Error(errormessage);
+                let errormessage = responsebody.error || `API returned status ${response.status}.`;
+                throw new Error(errormessage);
             }
+
             return responsebody;
         }
 

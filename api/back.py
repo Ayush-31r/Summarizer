@@ -14,7 +14,7 @@ CORS(app)
 def home():
     return jsonify({"status": "ok", "message": "backend is running."})
 
-@app.route("/summarize", methods=["POST"])
+@app.route("/api/back/summarize", methods=["POST"])
 def summarize():
     data = request.get_json()
     if not data or "text" not in data:
