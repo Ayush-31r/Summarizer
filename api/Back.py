@@ -29,6 +29,7 @@ def summarize():
     payload = {"inputs": text_to_summarize, "parameters": {"min_length": 60, "max_length": 150}}
 
     try:
+        
         response = requests.post(HUGGINGFACE_API_URL, headers=headers, json=payload)
         response.raise_for_status()
         return jsonify(response.json())
