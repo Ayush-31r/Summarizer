@@ -1,16 +1,19 @@
 {
-    "version": 2,
-    "builds": [
-        {
-            "src": "Back.py",
-            "use": "@vercel/python"
-        }
-    ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "methods": ["GET", "POST", "OPTIONS"],
-            "dest": "Back.py"
-        }
-    ]
+  "version": 2,
+  "builds": [
+    {
+      "src": "/api/Back.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/Back",
+      "dest": "/api/Back.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
 }

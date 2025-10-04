@@ -38,7 +38,7 @@
             <div class="px-6 py-8 sm:px-10">
                 <div class="text-center">
                      <svg class="mx-auto h-12 w-auto text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
+                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
                      </svg>
                     <h1 class="text-3xl font-bold text-gray-100 mt-4">AI summarizer</h1>
                     <p class="mt-2 text-md text-gray-400">drop your text below. we'll condense it for you.</p>
@@ -72,27 +72,27 @@
             
             <div id="errorBox" class="px-6 pb-8 sm:px-10 hidden">
                  <div class="rounded-md bg-red-900/50 border border-red-700 p-4">
-                    <div class="flex">
-                        <div class="flex-shrink-0">
-                             <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
-                            </svg>
-                        </div>
-                        <div class="ml-3">
-                            <h3 id="errorTitle" class="text-sm font-medium text-red-300">an error occurred</h3>
-                            <div class="mt-2 text-sm text-red-400">
-                                <p id="errorMessage"></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                     <div class="flex">
+                         <div class="flex-shrink-0">
+                              <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                              </svg>
+                         </div>
+                         <div class="ml-3">
+                             <h3 id="errorTitle" class="text-sm font-medium text-red-300">an error occurred</h3>
+                             <div class="mt-2 text-sm text-red-400">
+                                 <p id="errorMessage"></p>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // important: we replace "your_backend_url_here" with the actual url of our deployed python server.
-        const backend_api_url = "https://summarizer-wheat.vercel.app/summarize";
+        // the api url is now a relative path that matches the route in vercel.json.
+        const backend_api_url = "/api/Back";
 
         // here we are getting references to our html elements.
         const articletextinput = document.getElementById('articleText');
@@ -113,11 +113,6 @@
             resultsection.classList.add('hidden');
 
             const articletext = articletextinput.value.trim();
-
-            if (backend_api_url.includes("your_backend_url_here")) {
-                showerror("backend url missing", "please edit this file and set the url for your deployed python backend.");
-                return;
-            }
 
             if (!articletext) {
                 showerror("no text provided", "please paste the article text you want to summarize.");
