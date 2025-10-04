@@ -6,7 +6,6 @@ import os
 # Load environment variable
 HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
 HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/sshleifer/distilbart-cnn-12-6"
-"
 
 app = Flask(__name__)
 CORS(app)
