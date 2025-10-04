@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Summarizer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* dark background */
+        }
+        .gradient-bg {
+            background-image: linear-gradient(145deg, #1f2937, #111827);
+        }
+        textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: #1f2937;
+            border-radius: 10px;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background: #4f46e5;
+            border-radius: 10px;
+        }
+        textarea::-webkit-scrollbar-thumb:hover {
+            background: #6366f1;
+        }
+    </style>
+</head>
+<body class="h-full flex items-center justify-center p-4">
+    <div class="w-full max-w-2xl mx-auto">
+        <div class="gradient-bg rounded-2xl shadow-2xl overflow-hidden border border-gray-700">
+            <div class="px-6 py-8 sm:px-10">
+                <div class="text-center">
+                     <svg class="mx-auto h-12 w-auto text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
+                     </svg>
+                    <h1 class="text-3xl font-bold text-gray-100 mt-4">AI summarizer</h1>
+                    <p class="mt-2 text-md text-gray-400">drop your text below. we'll condense it for you.</p>
+                </div>
+
+                <div class="mt-8 space-y-6">
+                    <div>
+                        <div class="mt-1">
+                            <textarea id="articleText" name="articleText" rows="10" class="bg-gray-800 text-gray-300 appearance-none block w-full px-4 py-3 border border-gray-600 rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-shadow duration-300" placeholder="paste your article here..."></textarea>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button id="summarizeBtn" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500 transition-all duration-300 disabled:bg-indigo-500/50 transform hover:scale-105">
+                            <span id="buttonText">generate summary</span>
+                            <svg id="loadingSpinner" class="animate-spin h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="resultSection" class="px-6 pb-8 sm:px-10 hidden">
+                <hr class="border-gray-700 mb-6">
+                <h2 class="text-xl font-semibold text-gray-200">your summary</h2>
+                <div id="summaryOutput" class="mt-4 p-4 bg-gray-800 rounded-lg text-gray-300 leading-relaxed prose border border-gray-700">
+                </div>
+            </div>
+            
+            <div id="errorBox" class="px-6 pb-8 sm:px-10 hidden">
+                 <div class="rounded-md bg-red-900/50 border border-red-700 p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                             <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <h3 id="errorTitle" class="text-sm font-medium text-red-300">an error occurred</h3>
+                            <div class="mt-2 text-sm text-red-400">
+                                <p id="errorMessage"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // important: we replace "your_backend_url_here" with the actual url of our deployed python server.
+        const backend_api_url = "http://127.0.0.1:5000/summarize";
+
+        // here we are getting references to our html elements.
+        const articletextinput = document.getElementById('articleText');
+        const summarizebtn = document.getElementById('summarizeBtn');
+        const buttontext = document.getElementById('buttonText');
+        const loadingspinner = document.getElementById('loadingSpinner');
+        const resultsection = document.getElementById('resultSection');
+        const summaryoutput = document.getElementById('summaryOutput');
+        const errorbox = document.getElementById('errorBox');
+        const errortitle = document.getElementById('errorTitle');
+        const errormessage = document.getElementById('errorMessage');
+
+        // here we add a click listener to our button.
+        summarizebtn.addEventListener('click', handlesummarize);
+
+        async function handlesummarize() {
+            hideerror();
+            resultsection.classList.add('hidden');
+
+            const articletext = articletextinput.value.trim();
+
+            if (backend_api_url.includes("your_backend_url_here")) {
+                showerror("backend url missing", "please edit this file and set the url for your deployed python backend.");
+                return;
+            }
+
+            if (!articletext) {
+                showerror("no text provided", "please paste the article text you want to summarize.");
+                return;
+            }
+
+            setloading(true);
+
+            try {
+                const summary = await querybackendapi({ text: articletext });
+                if (summary && summary.length > 0 && summary[0].summary_text) {
+                    displaysummary(summary[0].summary_text);
+                } else {
+                     showerror("summarization failed", "could not extract summary from the api response.");
+                }
+            } catch (error) {
+                console.error("api error:", error);
+                showerror("api request failed", error.message || "an unknown error occurred. check the console for details.");
+            } finally {
+                setloading(false);
+            }
+        }
+
+        async function querybackendapi(data) {
+            const response = await fetch(backend_api_url, {
+                headers: {
+                    "content-type": "application/json"
+                },
+                method: "post",
+                body: JSON.stringify(data),
+            });
+
+            const responsebody = await response.json();
+
+            if (!response.ok) {
+                 let errormessage = responsebody.error || `api returned status ${response.status}.`;
+                 throw new Error(errormessage);
+            }
+            return responsebody;
+        }
+
+        function setloading(isloading) {
+            summarizebtn.disabled = isloading;
+            buttontext.style.display = isloading ? 'none' : 'block';
+            loadingspinner.classList.toggle('hidden', !isloading);
+        }
+
+        function displaysummary(summarytext) {
+            summaryoutput.textContent = summarytext;
+            resultsection.classList.remove('hidden');
+        }
+
+        function showerror(title, message) {
+            errortitle.textContent = title;
+            errormessage.textContent = message;
+            errorbox.classList.remove('hidden');
+        }
+
+        function hideerror() {
+            if (!errorbox.classList.contains('hidden')) {
+                errorbox.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
+
