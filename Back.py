@@ -19,6 +19,12 @@ CORS(app)
 HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
 HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
 
+# here we add a "health check" route at the root url.
+# this helps us test if the vercel deployment is running, even if /summarize has an issue.
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({'status': 'ok', 'message': 'backend is running.'})
+
 @app.route('/summarize', methods=['POST'])
 def summarize():
     # we get the json data sent from the frontend.
@@ -60,3 +66,4 @@ def summarize():
 if __name__ == '__main__':
     # this lets us run the server locally for testing.
     app.run(debug=True, port=5000)
+
