@@ -2,11 +2,5 @@
   "version": 2,
   "builds": [
     { "src": "api/summarize.py", "use": "@vercel/python" }
-  ],
-  "env": {
-    "GEMINI_API_KEY": "GEMINI_API_KEY"
-  },
-  "routes": [
-    { "src": "/summarize", "dest": "/api/summarize.py" }
   ]
 }
