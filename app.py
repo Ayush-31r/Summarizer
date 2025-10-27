@@ -21,7 +21,7 @@ if st.button("Summarize"):
         st.warning("Please enter some text.")
     else:
         try:
-            model = genai.GenerativeModel("gemini-1.5-flash")
+            model = genai.GenerativeModel("gemini-2.5-flash")
             with st.spinner("Summarizing..."):
                 prompt = f"Summarize this text in 3–4 lines, keeping the key ideas only:\n\n{text}"
                 response = model.generate_content(prompt)
