@@ -6,4 +6,5 @@ A web app that generates concise summaries from any text input using HuggingFace
 - Shows clear error messages if the API fails or the input is invalid.  
 - Fast and efficient with optimized model usage.
 
-**Live Demo:** [summarizer]([https://summarizer-texts.streamlit.app/#gemini-ai-summarizer])
+
+**Live Demo:** [https://summarizer-texts.streamlit.app/#gemini-ai-summarizer](https://summarizer-texts.streamlit.app/#gemini-ai-summarizer)
