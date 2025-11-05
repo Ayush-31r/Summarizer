@@ -6,4 +6,4 @@ A web app that generates concise summaries from any text input using HuggingFace
 - Shows clear error messages if the API fails or the input is invalid.  
 - Fast and efficient with optimized model usage.
 
-**Live Demo:** [https://summarizer-wine.vercel.app](https://summarizer-wine.vercel.app)
+**Live Demo:** [summarizer]([https://summarizer-texts.streamlit.app/#gemini-ai-summarizer])
